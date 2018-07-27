@@ -1,0 +1,22 @@
+{
+  "name": "hybrid-recommender",
+  "version": "0.0.0",
+  "description": "Simple hybrid recommender",
+  "main": "src/index.ts",
+  "repository": "https://github.com/Fir3st/hybrid-recommender",
+  "author": "Vladimír Fojtík <fojtik.v@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+      "dev": "node_modules/.bin/nodemon",
+      "start": "ts-node src/index.ts",
+      "lint": "node_modules/.bin/tslint --project tsconfig.json"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3",
+    "ts-node": "^7.0.0",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.9.2",
+    "typescript": "^2.9.2"
+  }
+}
