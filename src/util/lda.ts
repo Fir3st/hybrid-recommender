@@ -41,7 +41,7 @@ export class LDA {
     private dispcol = 0;
     private numstats = 0;
 
-    configure (v, iterations, burnIn, thinInterval, sampleLag) {
+    private configure (v, iterations, burnIn, thinInterval, sampleLag) {
         this.ITERATIONS = iterations;
         this.BURN_IN = burnIn;
         this.THIN_INTERVAL = thinInterval;
@@ -51,7 +51,7 @@ export class LDA {
         this.numstats = 0;
     }
 
-    initialState (K) {
+    private initialState (K) {
         let i;
         const M = this.documents.length;
         this.nw = make2DArray(this.V, K);
@@ -74,7 +74,7 @@ export class LDA {
         }
     }
 
-    gibbs (K, alpha, beta) {
+    private gibbs (K, alpha, beta) {
         let i;
         this.K = K;
         this.alpha = alpha;
@@ -110,7 +110,7 @@ export class LDA {
         }
     }
 
-    sampleFullConditional (m, n) {
+    private sampleFullConditional (m, n) {
         let topic = this.z[m][n];
         this.nw[this.documents[m][n]][topic]--;
         this.nd[m][topic]--;
@@ -138,7 +138,7 @@ export class LDA {
         return topic;
     }
 
-    updateParams() {
+    private updateParams() {
         for (let m = 0; m < this.documents.length; m++) {
             for (let k = 0; k < this.K; k++) {
                 this.thetasum[m][k] += (this.nd[m][k] + this.alpha) / (this.ndsum[m] + this.K * this.alpha);
@@ -152,7 +152,7 @@ export class LDA {
         this.numstats++;
     }
 
-    getTheta() {
+    private getTheta() {
         const theta = [];
         for (let i = 0; i < this.documents.length; i++) theta[i] = [];
         if (this.SAMPLE_LAG > 0) {
@@ -171,7 +171,7 @@ export class LDA {
         return theta;
     }
 
-    getPhi() {
+    private getPhi() {
         const phi = []; for (let i = 0; i < this.K; i++) phi[i] = [];
         if (this.SAMPLE_LAG > 0) {
             for (let k = 0; k < this.K; k++) {
@@ -189,13 +189,17 @@ export class LDA {
         return phi;
     }
 
-    process(docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) {
+    public process(docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) {
+        const result: any = {
+            topics: [],
+            docs: []
+        };
         const f = {};
         const vocab = [];
         let docCount = 0;
         for (let i = 0; i < docs.length; i++) {
-            if (docs[i] === '') continue;
-            const words = docs[i].split(/[\s,\"]+/);
+            if (docs[i].content === '') continue;
+            const words = docs[i].content.split(/[\s,\"]+/);
             if (!words) continue;
             const wordIndices = [];
             for (let wc = 0; wc < words.length; wc++) {
@@ -233,18 +237,30 @@ export class LDA {
             tuples.sort().reverse();
             if (topTerms > vocab.length) topTerms = vocab.length;
             topicText[k] = '';
+            const topic = {
+                number: k,
+                terms: []
+            };
             for (let t = 0; t < topTerms; t++) {
                 const topicTerm = tuples[t].split('_')[1];
                 const prob = tuples[t].split('_')[0] * 100;
                 if (prob < 0.0001) continue;
-                console.log('topic ' + k + ': ' + topicTerm + ' = ' + prob + '%');
-                topicText[k] += (topicTerm + ' ');
+                topic.terms.push({ term: topicTerm, probability: prob });
             }
+            result.topics.push(topic);
         }
         for (let m = 0; m < theta.length; m++) {
+            const doc = {
+                documentId: docs[m].id,
+                topics: {
+                }
+            };
             for (let k = 0; k < theta[m].length; k++) {
-                console.log(theta[m][k] * 100, k, docs[m]);
+                doc.topics[k] = theta[m][k] * 100;
             }
+            result.docs.push(doc);
         }
+
+        return result;
     }
 }
