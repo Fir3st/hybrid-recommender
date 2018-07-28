@@ -2,7 +2,26 @@
 * Based on https://github.com/awaisathar/lda.js
 */
 
-export const process = (docs) => {
+export const makeArray = (x) => {
+    const a = [];
+    for (let i = 0; i < x; i++) {
+        a[i] = 0;
+    }
+    return a;
+};
+
+export const make2DArray = (x, y) => {
+    const a = [];
+    for (let i = 0; i < x; i++) {
+        a[i] = [];
+        for (let j = 0; j < y; j++) {
+            a[i][j] = 0;
+        }
+    }
+    return a;
+};
+
+export const process = (docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) => {
     const documents = [];
     const f = {};
     const vocab = [];
@@ -31,9 +50,7 @@ export const process = (docs) => {
 
     const V = vocab.length;
     const M = documents.length;
-    const K = 4; // number of topics
-    const alpha = 0.1;  // per-document distributions over topics
-    const beta = 0.1;  // per-topic distributions over words
+    const K = numberOfTopics; // number of topics
     const lda = new LDA();
     lda.configure(documents, V, 10000, 2000, 100, 10);
     lda.gibbs(K, alpha, beta);
@@ -64,25 +81,6 @@ export const process = (docs) => {
         }
     }
 };
-
-function makeArray(x) {
-    const a = [];
-    for (let i = 0; i < x; i++) {
-        a[i] = 0;
-    }
-    return a;
-}
-
-function make2DArray(x, y) {
-    const a = [];
-    for (let i = 0; i < x; i++) {
-        a[i] = [];
-        for (let j = 0; j < y; j++) {
-            a[i][j] = 0;
-        }
-    }
-    return a;
-}
 
 export class LDA {
     private documents;
