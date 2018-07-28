@@ -16,6 +16,7 @@
                 "multiline": "never",
                 "singleline": "never"
             }
-        ]
+        ],
+        "no-increment-decrement": false
     }
 }

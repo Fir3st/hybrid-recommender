@@ -1,4 +1,4 @@
-import ContentBasedRecommender from './lib/ContentBasedRecommender';
+import ContentBasedRecommender from './classes/ContentBasedRecommender';
 
 const cbRecommender = new ContentBasedRecommender({
     minScore: 0.1,

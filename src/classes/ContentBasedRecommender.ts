@@ -1,8 +1,13 @@
+/*
+* Based on https://github.com/stanleyfok/content-based-recommender
+*/
+
 import * as _ from 'lodash';
 import * as Vector from 'vector-object';
 import * as striptags from 'striptags';
 import * as sw from 'stopword';
 import * as natural from 'natural';
+import { process } from '../util/lda';
 
 const { TfIdf, PorterStemmer, NGrams } = natural;
 const tokenizer = new natural.WordTokenizer();
@@ -60,14 +65,18 @@ export default class CBRecommender {
             console.log(`Total documents: ${documents.length}`);
         }
 
-        // step 1 - preprocess the documents
-        const preprocessDocs = this.preprocessDocuments(documents, this.options);
+        const docs = documents.map(document => document.content);
+        process(docs);
 
-        // step 2 - create document vectors
+        /* // step 1 - preprocess the documents
+        const preprocessDocs = this.preprocessDocuments(documents, this.options);
+        console.log(preprocessDocs);
+
+        /*  // step 2 - create document vectors
         const docVectors = this.produceWordVectors(preprocessDocs, this.options);
 
         // step 3 - calculate similarities
-        this.data = this.calculateSimilarities(docVectors, this.options);
+        this.data = this.calculateSimilarities(docVectors, this.options); */
     }
 
     public validateDocuments(documents) {
@@ -104,7 +113,8 @@ export default class CBRecommender {
 
         const processedDocuments = documents.map(item => ({
             id: item.id,
-            tokens: this.getTokensFromString(item.content)
+            tokens: this.getTokensFromString(item.content),
+            bagOfWords: this.getBagOfWordsFromString(item.content)
         }));
 
         return processedDocuments;
@@ -139,7 +149,12 @@ export default class CBRecommender {
                 // stem the tokens
                 trigram.map(token => PorterStemmer.stem(token)).join('_'));
 
-        return [].concat(unigrams, bigrams, trigrams);
+        return [...unigrams, ...bigrams, ...trigrams];
+    }
+
+    private getBagOfWordsFromString(string) {
+        const tokens = tokenizer.tokenize(string.toLowerCase());
+        return sw.removeStopwords(tokens);
     }
 
     private produceWordVectors(processedDocuments, options) {
