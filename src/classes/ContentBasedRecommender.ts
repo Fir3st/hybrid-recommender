@@ -66,7 +66,7 @@ export default class CBRecommender {
         }
 
         const lda = new LDA();
-        const result = lda.process(documents);
+        const result = lda.process(documents, 2);
         console.log(JSON.stringify(result, null, 2));
 
         /* // step 1 - preprocess the documents

@@ -1,6 +1,12 @@
 /*
 * Based on https://github.com/awaisathar/lda.js
 */
+import * as natural from 'natural';
+import * as sw from 'stopword';
+import * as striptags from 'striptags';
+
+const { TfIdf, PorterStemmer, NGrams } = natural;
+const tokenizer = new natural.WordTokenizer();
 
 export const makeArray = (x) => {
     const a = [];
@@ -198,14 +204,13 @@ export class LDA {
         const vocab = [];
         let docCount = 0;
         for (let i = 0; i < docs.length; i++) {
-            if (docs[i].content === '') continue;
-            const words = docs[i].content.split(/[\s,\"]+/);
-            if (!words) continue;
+            const tmpString = striptags(docs[i].content, [], ' ').toLowerCase();
+            if (tmpString === '') continue;
+            const tokens = tokenizer.tokenize(tmpString);
+            const words = sw.removeStopwords(tokens);
             const wordIndices = [];
-            for (let wc = 0; wc < words.length; wc++) {
-                const w = words[wc].toLowerCase().replace(/[^a-z\'A-Z0-9 ]+/g, '');
-                // TODO: Add stemming
-                if (w === '' || w.length === 1 || w.indexOf('http') === 0) continue;
+            for (const word of words) {
+                const w = PorterStemmer.stem(word);
                 if (f[w]) {
                     f[w] = f[w] + 1;
                 } else if (w) {
