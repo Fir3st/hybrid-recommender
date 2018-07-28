@@ -7,7 +7,7 @@ import * as Vector from 'vector-object';
 import * as striptags from 'striptags';
 import * as sw from 'stopword';
 import * as natural from 'natural';
-import { process } from '../util/lda';
+import { LDA } from '../util/lda';
 
 const { TfIdf, PorterStemmer, NGrams } = natural;
 const tokenizer = new natural.WordTokenizer();
@@ -66,7 +66,8 @@ export default class CBRecommender {
         }
 
         const docs = documents.map(document => document.content);
-        process(docs);
+        const lda = new LDA();
+        lda.process(docs);
 
         /* // step 1 - preprocess the documents
         const preprocessDocs = this.preprocessDocuments(documents, this.options);

@@ -21,69 +21,8 @@ export const make2DArray = (x, y) => {
     return a;
 };
 
-export const process = (docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) => {
-    const documents = [];
-    const f = {};
-    const vocab = [];
-    let docCount = 0;
-    for (let i = 0; i < docs.length; i++) {
-        if (docs[i] === '') continue;
-        const words = docs[i].split(/[\s,\"]+/);
-        if (!words) continue;
-        const wordIndices = [];
-        for (let wc = 0; wc < words.length; wc++) {
-            const w = words[wc].toLowerCase().replace(/[^a-z\'A-Z0-9 ]+/g, '');
-            // TODO: Add stemming
-            if (w === '' || w.length === 1 || w.indexOf('http') === 0) continue;
-            if (f[w]) {
-                f[w] = f[w] + 1;
-            } else if (w) {
-                f[w] = 1;
-                vocab.push(w);
-            }
-            wordIndices.push(vocab.indexOf(w));
-        }
-        if (wordIndices && wordIndices.length > 0) {
-            documents[docCount++] = wordIndices;
-        }
-    }
-
-    const V = vocab.length;
-    const M = documents.length;
-    const K = numberOfTopics; // number of topics
-    const lda = new LDA();
-    lda.configure(documents, V, 10000, 2000, 100, 10);
-    lda.gibbs(K, alpha, beta);
-    const theta = lda.getTheta();
-    const phi = lda.getPhi();
-    // topics
-    let topTerms = 20;
-    const topicText = [];
-    for (let k = 0; k < phi.length; k++) {
-        const tuples = [];
-        for (let w = 0; w < phi[k].length; w++) {
-            tuples.push('' + phi[k][w].toPrecision(2) + '_' + vocab[w]);
-        }
-        tuples.sort().reverse();
-        if (topTerms > vocab.length) topTerms = vocab.length;
-        topicText[k] = '';
-        for (let t = 0; t < topTerms; t++) {
-            const topicTerm = tuples[t].split('_')[1];
-            const prob = tuples[t].split('_')[0] * 100;
-            if (prob < 0.0001) continue;
-            console.log('topic ' + k + ': ' + topicTerm + ' = ' + prob + '%');
-            topicText[k] += (topicTerm + ' ');
-        }
-    }
-    for (let m = 0; m < theta.length; m++) {
-        for (let k = 0; k < theta[m].length; k++) {
-            console.log(theta[m][k] * 100, k, docs[m]);
-        }
-    }
-};
-
 export class LDA {
-    private documents;
+    private documents = [];
     private z;
     private nw;
     private nd;
@@ -102,12 +41,11 @@ export class LDA {
     private dispcol = 0;
     private numstats = 0;
 
-    configure (docs, v, iterations, burnIn, thinInterval, sampleLag) {
+    configure (v, iterations, burnIn, thinInterval, sampleLag) {
         this.ITERATIONS = iterations;
         this.BURN_IN = burnIn;
         this.THIN_INTERVAL = thinInterval;
         this.SAMPLE_LAG = sampleLag;
-        this.documents = docs;
         this.V = v;
         this.dispcol = 0;
         this.numstats = 0;
@@ -249,5 +187,64 @@ export class LDA {
             }
         }
         return phi;
+    }
+
+    process(docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) {
+        const f = {};
+        const vocab = [];
+        let docCount = 0;
+        for (let i = 0; i < docs.length; i++) {
+            if (docs[i] === '') continue;
+            const words = docs[i].split(/[\s,\"]+/);
+            if (!words) continue;
+            const wordIndices = [];
+            for (let wc = 0; wc < words.length; wc++) {
+                const w = words[wc].toLowerCase().replace(/[^a-z\'A-Z0-9 ]+/g, '');
+                // TODO: Add stemming
+                if (w === '' || w.length === 1 || w.indexOf('http') === 0) continue;
+                if (f[w]) {
+                    f[w] = f[w] + 1;
+                } else if (w) {
+                    f[w] = 1;
+                    vocab.push(w);
+                }
+                wordIndices.push(vocab.indexOf(w));
+            }
+            if (wordIndices && wordIndices.length > 0) {
+                this.documents[docCount++] = wordIndices;
+            }
+        }
+
+        const V = vocab.length;
+        const M = this.documents.length;
+        const K = numberOfTopics;
+        this.configure(V, 10000, 2000, 100, 10);
+        this.gibbs(K, alpha, beta);
+        const theta = this.getTheta();
+        const phi = this.getPhi();
+        // topics
+        let topTerms = 20;
+        const topicText = [];
+        for (let k = 0; k < phi.length; k++) {
+            const tuples = [];
+            for (let w = 0; w < phi[k].length; w++) {
+                tuples.push('' + phi[k][w].toPrecision(2) + '_' + vocab[w]);
+            }
+            tuples.sort().reverse();
+            if (topTerms > vocab.length) topTerms = vocab.length;
+            topicText[k] = '';
+            for (let t = 0; t < topTerms; t++) {
+                const topicTerm = tuples[t].split('_')[1];
+                const prob = tuples[t].split('_')[0] * 100;
+                if (prob < 0.0001) continue;
+                console.log('topic ' + k + ': ' + topicTerm + ' = ' + prob + '%');
+                topicText[k] += (topicTerm + ' ');
+            }
+        }
+        for (let m = 0; m < theta.length; m++) {
+            for (let k = 0; k < theta[m].length; k++) {
+                console.log(theta[m][k] * 100, k, docs[m]);
+            }
+        }
     }
 }
