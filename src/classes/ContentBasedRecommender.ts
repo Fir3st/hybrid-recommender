@@ -3,14 +3,8 @@
 */
 
 import * as _ from 'lodash';
-import * as Vector from 'vector-object';
-import * as striptags from 'striptags';
-import * as sw from 'stopword';
-import * as natural from 'natural';
+import * as similarity from 'compute-cosine-similarity';
 import { LDA } from '../util/lda';
-
-const { TfIdf, PorterStemmer, NGrams } = natural;
-const tokenizer = new natural.WordTokenizer();
 
 interface IOptions {
     maxVectorSize?: number;
@@ -23,7 +17,7 @@ const defaultOptions: IOptions = {
     maxVectorSize: 100,
     maxSimilarDocuments: Number.MAX_SAFE_INTEGER,
     minScore: 0,
-    debug: true
+    debug: false
 };
 
 export default class CBRecommender {
@@ -67,13 +61,8 @@ export default class CBRecommender {
 
         // step 1 - preprocess the documents
         const preprocessDocs = this.preprocessDocuments(documents, this.options);
-        console.log(preprocessDocs);
-
-        /*  // step 2 - create document vectors
-        const docVectors = this.produceWordVectors(preprocessDocs, this.options);
-
-        // step 3 - calculate similarities
-        this.data = this.calculateSimilarities(docVectors, this.options); */
+        // step 2 - calculate similarities
+        this.data = this.calculateSimilarities(preprocessDocs, this.options);
     }
 
     public validateDocuments(documents) {
@@ -108,79 +97,45 @@ export default class CBRecommender {
             console.log('Preprocessing documents');
         }
         const lda = new LDA();
-        const ldaResult = lda.process(documents, 3);
+        const ldaResult = lda.process(documents, 2);
         const processedDocuments = documents.map((item) => {
             const documentTopics = ldaResult.docs.filter(doc => doc.documentId === item.id)[0].topics;
-            return { id: item.id, topics: documentTopics };
+            return { id: item.id, title: item.title, topics: Object.values(documentTopics) };
         });
 
         return processedDocuments;
     }
 
-    private produceWordVectors(processedDocuments, options) {
-        // process tfidf
-        const tfidf = new TfIdf();
-
-        processedDocuments.forEach((processedDocument) => {
-            tfidf.addDocument(processedDocument.tokens);
-        });
-
-        // create word vector
-        const documentVectors = [];
-
-        for (let i = 0; i < processedDocuments.length; i += 1) {
-            if (options.debug) {
-                console.log(`Creating word vector for document ${i}`);
-            }
-
-            const processedDocument = processedDocuments[i];
-            const hash = {};
-
-            const items = tfidf.listTerms(i);
-            const maxSize = Math.min(options.maxVectorSize, items.length);
-            for (let j = 0; j < maxSize; j += 1) {
-                const item = items[j];
-                hash[item.term] = item.tfidf;
-            }
-
-            const documentVector = {
-                id: processedDocument.id,
-                vector: new Vector(hash)
-            };
-
-            documentVectors.push(documentVector);
-        }
-
-        return documentVectors;
-    }
-
-    private calculateSimilarities(documentVectors, options) {
+    private calculateSimilarities(documents, options) {
         const data = {};
 
         // initialize data hash
-        for (let i = 0; i < documentVectors.length; i += 1) {
-            const documentVector = documentVectors[i];
-            const { id } = documentVector;
+        for (let i = 0; i < documents.length; i += 1) {
+            const document = documents[i];
+            const { id } = document;
 
             data[id] = [];
         }
 
         // calculate the similar scores
-        for (let i = 0; i < documentVectors.length; i += 1) {
+        for (let i = 0; i < documents.length; i += 1) {
             if (options.debug) {
                 console.log(`Calculating similarity score for document ${i}`);
             }
 
             for (let j = 0; j < i; j += 1) {
-                const idi = documentVectors[i].id;
-                const vi = documentVectors[i].vector;
-                const idj = documentVectors[j].id;
-                const vj = documentVectors[j].vector;
-                const similarity = vi.getCosineSimilarity(vj);
+                const idi = documents[i].id;
+                const di = documents[i].topics;
+                const idj = documents[j].id;
+                const dj = documents[j].topics;
+                const sim = similarity(di, dj);
+                if (options.debug) {
+                    console.log(`Similarity: ${sim}`);
+                }
 
-                if (similarity > options.minScore) {
-                    data[idi].push({ id: idj, score: similarity });
-                    data[idj].push({ id: idi, score: similarity });
+                if (sim > options.minScore) {
+                    data[idi].push({ id: idj, score: sim });
+                    data[idj].push({ id: idi, score: sim });
                 }
             }
         }
