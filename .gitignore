@@ -3,6 +3,7 @@
 
 #dist
 /dist
+/src/data/data.json
 
 # logs
 npm-debug.log
@@ -15,3 +16,6 @@ yarn.lock
 #editors config
 /.vscode
 /.idea
+
+#config
+/config/local-development.json

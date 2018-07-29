@@ -210,6 +210,7 @@ export class LDA {
             const tokens = tokenizer.tokenize(tmpString);
             const words = sw.removeStopwords(tokens);
             const wordIndices = [];
+            // TODO: Add NGrams
             for (const word of words) {
                 const w = PorterStemmer.stem(word);
                 if (f[w]) {

@@ -10,9 +10,11 @@
   "scripts": {
     "dev": "node_modules/.bin/nodemon",
     "start": "ts-node src/index.ts",
-    "lint": "node_modules/.bin/tslint --project tsconfig.json"
+    "lint": "node_modules/.bin/tslint --project tsconfig.json",
+    "data": "ts-node src/data/index.ts"
   },
   "devDependencies": {
+    "@types/config": "^0.0.34",
     "@types/lodash": "^4.14.114",
     "@types/natural": "^0.2.33",
     "nodemon": "^1.18.3",
@@ -22,7 +24,10 @@
     "typescript": "^2.9.2"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "compute-cosine-similarity": "^1.0.0",
+    "config": "^2.0.0",
+    "fast-csv": "^2.4.1",
     "lodash": "^4.17.10",
     "natural": "^0.6.1",
     "stopword": "^0.1.10",
