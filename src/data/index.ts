@@ -10,14 +10,16 @@ const movies = {
 csv
     .fromPath('src/data/links.csv')
     .on('data', (data) => {
-        const movie = {
+        const movie: any = {
             id: data[0],
             imdbId: data[1]
         };
-        /* axios.post('http://imdbapi.net/api', { key: config.get('imdbApiKey'), id: movie.imdbId }).then((response) => {
-            console.log(response.data);
-        }); */
-        movies.data.push(movie);
+        axios.post('http://imdbapi.net/api', { key: config.get('imdbApiKey'), id: movie.imdbId }).then((response) => {
+            movie.title = response.data.title;
+            movie.genre = response.data.genre;
+            movie.content = response.data.plot;
+        }).then(() => movies.data.push(movie))
+        .catch(error => console.log(error));
     })
     .on('end', () => {
         fs.writeFile('src/data/data.json', JSON.stringify(movies), (err) => {
