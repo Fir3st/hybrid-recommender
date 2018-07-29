@@ -205,6 +205,7 @@ export class LDA {
         let docCount = 0;
         for (let i = 0; i < docs.length; i++) {
             const tmpString = striptags(docs[i].content, [], ' ').toLowerCase();
+            // TODO: Add tf-idf
             if (tmpString === '') continue;
             const tokens = tokenizer.tokenize(tmpString);
             const words = sw.removeStopwords(tokens);
