@@ -65,11 +65,7 @@ export default class CBRecommender {
             console.log(`Total documents: ${documents.length}`);
         }
 
-        const lda = new LDA();
-        const result = lda.process(documents, 2);
-        console.log(JSON.stringify(result, null, 2));
-
-        /* // step 1 - preprocess the documents
+        // step 1 - preprocess the documents
         const preprocessDocs = this.preprocessDocuments(documents, this.options);
         console.log(preprocessDocs);
 
@@ -111,51 +107,14 @@ export default class CBRecommender {
         if (options.debug) {
             console.log('Preprocessing documents');
         }
-
-        const processedDocuments = documents.map(item => ({
-            id: item.id,
-            tokens: this.getTokensFromString(item.content),
-            bagOfWords: this.getBagOfWordsFromString(item.content)
-        }));
+        const lda = new LDA();
+        const ldaResult = lda.process(documents, 3);
+        const processedDocuments = documents.map((item) => {
+            const documentTopics = ldaResult.docs.filter(doc => doc.documentId === item.id)[0].topics;
+            return { id: item.id, topics: documentTopics };
+        });
 
         return processedDocuments;
-    }
-
-    private getTokensFromString(string) {
-        // remove html and to lower case
-        const tmpString = striptags(string, [], ' ').toLowerCase();
-
-        // tokenize the string
-        const tokens = tokenizer.tokenize(tmpString);
-
-        // get unigrams
-        const unigrams = sw.removeStopwords(tokens)
-            .map(unigram => PorterStemmer.stem(unigram));
-
-        // get bigrams
-        const bigrams = NGrams.bigrams(tokens)
-            .filter(bigram =>
-                // filter terms with stopword
-                (bigram.length === sw.removeStopwords(bigram).length))
-            .map(bigram =>
-                // stem the tokens
-                bigram.map(token => PorterStemmer.stem(token)).join('_'));
-
-        // get trigrams
-        const trigrams = NGrams.trigrams(tokens)
-            .filter(trigram =>
-                // filter terms with stopword
-                (trigram.length === sw.removeStopwords(trigram).length))
-            .map(trigram =>
-                // stem the tokens
-                trigram.map(token => PorterStemmer.stem(token)).join('_'));
-
-        return [...unigrams, ...bigrams, ...trigrams];
-    }
-
-    private getBagOfWordsFromString(string) {
-        const tokens = tokenizer.tokenize(string.toLowerCase());
-        return sw.removeStopwords(tokens);
     }
 
     private produceWordVectors(processedDocuments, options) {
