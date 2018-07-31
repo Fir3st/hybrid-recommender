@@ -10,6 +10,7 @@ interface IOptions {
     maxVectorSize?: number;
     maxSimilarDocuments?: number;
     minScore?: number;
+    numberOfTopics?: number;
     debug?: boolean;
 }
 
@@ -17,6 +18,7 @@ const defaultOptions: IOptions = {
     maxVectorSize: 100,
     maxSimilarDocuments: Number.MAX_SAFE_INTEGER,
     minScore: 0,
+    numberOfTopics: 5,
     debug: false
 };
 
@@ -97,7 +99,7 @@ export default class CBRecommender {
             console.log('Preprocessing documents');
         }
         const lda = new LDA();
-        const ldaResult = lda.process(documents, 2);
+        const ldaResult = lda.process(documents, options.numberOfTopics);
         const processedDocuments = documents.map((item) => {
             const documentTopics = ldaResult.docs.filter(doc => doc.documentId === item.id)[0].topics;
             return { id: item.id, title: item.title, topics: Object.values(documentTopics) };
