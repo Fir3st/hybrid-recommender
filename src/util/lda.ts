@@ -204,6 +204,7 @@ export class LDA {
         const vocab = [];
         let docCount = 0;
         for (let i = 0; i < docs.length; i++) {
+            console.log(`Processing document ${i + 1} of ${docs.length}`);
             const tmpString = striptags(docs[i].content, [], ' ').toLowerCase();
             // TODO: Add tf-idf
             if (tmpString === '') continue;
@@ -229,12 +230,12 @@ export class LDA {
         const V = vocab.length;
         const M = this.documents.length;
         const K = numberOfTopics;
-        this.configure(V, 10000, 2000, 100, 10);
+        this.configure(V, 5000, 1000, 100, 10);
         this.gibbs(K, alpha, beta);
         const theta = this.getTheta();
         const phi = this.getPhi();
         // topics
-        let topTerms = 20;
+        let topTerms = 30;
         const topicText = [];
         for (let k = 0; k < phi.length; k++) {
             const tuples = [];
