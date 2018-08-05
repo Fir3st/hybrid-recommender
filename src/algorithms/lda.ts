@@ -195,7 +195,7 @@ export class LDA {
         return phi;
     }
 
-    public process(docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1) {
+    public process(docs, numberOfTopics = 3, alpha = 0.1, beta = 0.1, topTerms = 30) {
         const result: any = {
             topics: [],
             docs: []
@@ -235,7 +235,6 @@ export class LDA {
         const theta = this.getTheta();
         const phi = this.getPhi();
         // topics
-        let topTerms = 30;
         const topicText = [];
         for (let k = 0; k < phi.length; k++) {
             const tuples = [];
@@ -243,13 +242,13 @@ export class LDA {
                 tuples.push('' + phi[k][w].toPrecision(2) + '_' + vocab[w]);
             }
             tuples.sort().reverse();
-            if (topTerms > vocab.length) topTerms = vocab.length;
             topicText[k] = '';
             const topic = {
                 number: k,
                 terms: []
             };
-            for (let t = 0; t < topTerms; t++) {
+            const size = (topTerms > vocab.length) ? topTerms : vocab.length;
+            for (let t = 0; t < size; t++) {
                 const topicTerm = tuples[t].split('_')[1];
                 const prob = tuples[t].split('_')[0] * 100;
                 if (prob < 0.0001) continue;

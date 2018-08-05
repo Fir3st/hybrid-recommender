@@ -4,7 +4,7 @@
 
 import * as _ from 'lodash';
 import * as similarity from 'compute-cosine-similarity';
-import { LDA } from '../util/lda';
+import { LDA } from '../algorithms/lda';
 
 interface IOptions {
     maxVectorSize?: number;
