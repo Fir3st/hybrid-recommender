@@ -1,5 +1,5 @@
 import ContentBasedRecommender from './classes/ContentBasedRecommender';
-const movies = require('./data/data.json');
+const MOVIES_DATA = require('./data/movies_data.json');
 
 const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
@@ -8,7 +8,7 @@ const cbRecommender = new ContentBasedRecommender({
     numberOfTopics: 20
 });
 
-cbRecommender.train(movies.data.slice(0, 500));
+cbRecommender.train(MOVIES_DATA.data.slice(0, 500));
 
 const similarDocuments = cbRecommender.getSimilarDocuments('110', 0, 10);
 

@@ -31,7 +31,7 @@ csv()
     })
     .then(() => {
         console.log('Writing to file');
-        fs.writeFile('src/data/data.json', JSON.stringify(movies), (err) => {
+        fs.writeFile('src/data/movies_data.json', JSON.stringify(movies), (err) => {
             if (err) {
                 console.log(err);
             }
