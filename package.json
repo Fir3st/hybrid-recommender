@@ -11,7 +11,7 @@
     "dev": "node_modules/.bin/nodemon",
     "start": "ts-node src/index.ts",
     "lint": "node_modules/.bin/tslint --project tsconfig.json",
-    "data": "ts-node src/data/index.ts"
+    "data:movies": "ts-node src/data/movies_data.ts"
   },
   "devDependencies": {
     "@types/config": "^0.0.34",
