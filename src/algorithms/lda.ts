@@ -5,7 +5,7 @@ import * as natural from 'natural';
 import * as sw from 'stopword';
 import * as striptags from 'striptags';
 
-const { TfIdf, PorterStemmer, NGrams } = natural;
+const { PorterStemmer } = natural;
 const tokenizer = new natural.WordTokenizer();
 
 export const makeArray = (x) => {
