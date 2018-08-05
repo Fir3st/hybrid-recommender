@@ -1,5 +1,6 @@
 import ContentBasedRecommender from './classes/ContentBasedRecommender';
 const MOVIES_DATA = require('./data/movies_data.json');
+const RATINGS_DATA = require('./data/ratings_data.json');
 
 const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
