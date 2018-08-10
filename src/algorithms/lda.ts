@@ -4,28 +4,10 @@
 import * as natural from 'natural';
 import * as sw from 'stopword';
 import * as striptags from 'striptags';
+import { Matrix } from 'ml-matrix';
 
 const { PorterStemmer } = natural;
 const tokenizer = new natural.WordTokenizer();
-
-export const makeArray = (x) => {
-    const a = [];
-    for (let i = 0; i < x; i++) {
-        a[i] = 0;
-    }
-    return a;
-};
-
-export const make2DArray = (x, y) => {
-    const a = [];
-    for (let i = 0; i < x; i++) {
-        a[i] = [];
-        for (let j = 0; j < y; j++) {
-            a[i][j] = 0;
-        }
-    }
-    return a;
-};
 
 export class LDA {
     private documents = [];
@@ -60,10 +42,10 @@ export class LDA {
     private initialState (K) {
         let i;
         const M = this.documents.length;
-        this.nw = make2DArray(this.V, K);
-        this.nd = make2DArray(M, K);
-        this.nwsum = makeArray(K);
-        this.ndsum = makeArray(M);
+        this.nw = Matrix.zeros(this.V, K);
+        this.nd = Matrix.zeros(M, K);
+        this.nwsum = Matrix.zeros(K, 1);
+        this.ndsum = Matrix.zeros(M, 1);
         this.z = [];
         for (i = 0; i < M; i = i + 1) this.z[i] = [];
         for (let m = 0; m < M; m = m + 1) {
@@ -86,8 +68,8 @@ export class LDA {
         this.alpha = alpha;
         this.beta = beta;
         if (this.SAMPLE_LAG > 0) {
-            this.thetasum = make2DArray(this.documents.length, this.K);
-            this.phisum = make2DArray(this.K, this.V);
+            this.thetasum = Matrix.zeros(this.documents.length, this.K);
+            this.phisum = Matrix.zeros(this.K, this.V);
             this.numstats = 0;
         }
         this.initialState(K);
@@ -122,7 +104,7 @@ export class LDA {
         this.nd[m][topic]--;
         this.nwsum[topic]--;
         this.ndsum[m]--;
-        const p = makeArray(this.K);
+        const p = Matrix.zeros(this.K, 1);
         for (let k = 0; k < this.K; k++) {
             p[k] = (this.nw[this.documents[m][n]][k] + this.beta) / (this.nwsum[k] + this.V * this.beta)
                 * (this.nd[m][k] + this.alpha) / (this.ndsum[m] + this.K * this.alpha);
