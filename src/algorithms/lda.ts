@@ -40,14 +40,13 @@ export class LDA {
     }
 
     private initialState (K) {
-        let i;
         const M = this.documents.length;
         this.nw = Matrix.zeros(this.V, K);
         this.nd = Matrix.zeros(M, K);
         this.nwsum = Matrix.zeros(K, 1);
         this.ndsum = Matrix.zeros(M, 1);
-        this.z = [];
-        for (i = 0; i < M; i = i + 1) this.z[i] = [];
+        this.z = Array(M).fill(null);
+
         for (let m = 0; m < M; m = m + 1) {
             const N = this.documents[m].length;
             this.z[m] = [];
