@@ -11,17 +11,19 @@ const movies = {
 csv()
     .fromFile('src/data/links.csv')
     .then((data) => {
-        const queue = new TaskQueue(Promise, 5);
+        const queue = new TaskQueue(Promise, 10);
         return Promise.all(data.map(queue.wrap((mov) => {
             const movie: any = {
                 id: mov.movieId,
                 imdbId: mov.imdbId
             };
             console.log(`Getting data for ${movie.id}`);
-            return axios.post('http://imdbapi.net/api', { key: config.get('imdbApiKey'), id: movie.imdbId }).then((response) => {
-                movie.title = response.data.title;
-                movie.genre = response.data.genre;
-                movie.content = response.data.plot;
+            return axios.get(`http://www.omdbapi.com/?i=tt${movie.imdbId}&apikey=${config.get('omdbApiKey')}&plot=full`).then((response) => {
+                movie.title = response.data.Title;
+                movie.genre = response.data.Genre;
+                movie.content = response.data.Plot;
+                movie.poster = response.data.Poster;
+                movie.rating = response.data.imdbRating;
             }).then(() => {
                 console.log(`Pushing ${movie.id} into array`);
                 movies.data.push(movie);
