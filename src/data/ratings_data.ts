@@ -10,18 +10,13 @@ csv()
     .then((data: any) => {
         data.forEach((element) => {
             if (element.userId in ratings.data) {
-                ratings.data[element.userId].movies.push({
-                    movieId: Number.parseInt(element.movieId, 10),
+                ratings.data[element.userId][element.movieId] = {
                     rating: Number.parseFloat(element.rating)
-                });
+                };
             } else {
-                ratings.data[element.userId] = {
-                    movies: [
-                        {
-                            movieId: Number.parseInt(element.movieId, 10),
-                            rating: Number.parseFloat(element.rating)
-                        }
-                    ]
+                ratings.data[element.userId] = {};
+                ratings.data[element.userId][element.movieId] = {
+                    rating: Number.parseFloat(element.rating)
                 };
             }
         });
