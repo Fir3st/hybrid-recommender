@@ -15,13 +15,12 @@ export function getCosineSimilarityRowVector(matrix, index) {
 }
 
 export function addUserRating(userId, searchTitle, rating, MOVIES_IN_LIST) {
-    const { id, title } = getMovieIndexByTitle(MOVIES_IN_LIST, searchTitle);
+    const { id } = getMovieIndexByTitle(MOVIES_IN_LIST, searchTitle);
 
     return {
-        userId,
-        rating,
-        title,
-        movieId: id
+        userId: parseInt(userId, 10),
+        rating: parseFloat(rating),
+        movieId: parseInt(id, 10)
     };
 }
 
@@ -33,5 +32,5 @@ export function getMovieIndexByTitle(MOVIES_IN_LIST, query) {
     }
 
     const { title, id } = MOVIES_IN_LIST[index];
-    return { index, title, id };
+    return { title, id };
 }
