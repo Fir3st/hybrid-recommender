@@ -34,3 +34,14 @@ export function getMovieIndexByTitle(MOVIES_IN_LIST, query) {
     const { title, id } = MOVIES_IN_LIST[index];
     return { title, id };
 }
+
+export function sliceAndDice(recommendations, MOVIES_BY_ID, count, onlyTitle) {
+    let recommends = recommendations.filter(recommendation => MOVIES_BY_ID[recommendation.movieId]);
+
+    recommends = onlyTitle
+        ? recommendations.map(mr => ({ title: MOVIES_BY_ID[mr.movieId].title, score: mr.score }))
+        : recommendations.map(mr => ({ movie: MOVIES_BY_ID[mr.movieId], score: mr.score }));
+
+    return recommendations
+        .slice(0, count);
+}

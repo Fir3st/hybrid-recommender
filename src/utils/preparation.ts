@@ -43,3 +43,10 @@ export function prepareDataByMovie(data) {
 
     return ratingsByMovie;
 }
+
+export function prepareRatings(data) {
+    return {
+        ratingsByUser: prepareDataByUser(data),
+        ratingsByMovie: prepareDataByMovie(data)
+    };
+}

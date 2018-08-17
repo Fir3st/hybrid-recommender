@@ -1,6 +1,7 @@
 import ContentBasedRecommender from './classes/ContentBasedRecommender';
 import CollaborativeFilteringRecommender from './classes/CollaborativeFilteringRecommender';
-import { addUserRating } from './utils/common';
+import { addUserRating, sliceAndDice } from './utils/common';
+import { prepareRatings } from './utils/preparation';
 const MOVIES_DATA = require('./data/movies_data.json').data;
 const RATINGS_DATA = require('./data/ratings_data.json').data;
 const ME_USER_ID = 0;
@@ -21,7 +22,19 @@ const ME_USER_RATINGS = [
     addUserRating(ME_USER_ID, 'Reservoir Dogs', '3.0', MOVIES_DATA),
     addUserRating(ME_USER_ID, 'Men in Black II', '3.0', MOVIES_DATA)
 ];
-console.log(ME_USER_RATINGS);
+
+const { ratingsByUser, ratingsByMovie } = prepareRatings([...ME_USER_RATINGS, ...RATINGS_DATA]);
+
+console.log('(1) Computing User-Based Cosine Similarity \n');
+
+const cfUserBasedRecommendation = cbfRecommender.predictWithCfUserBased(
+    ratingsByUser,
+    ratingsByMovie,
+    ME_USER_ID
+);
+
+console.log('(2) Prediction \n');
+console.log(sliceAndDice(cfUserBasedRecommendation, MOVIES_DATA, 10, true));
 
 /* cbRecommender.train(MOVIES_DATA.data.slice(0, 500));
 
