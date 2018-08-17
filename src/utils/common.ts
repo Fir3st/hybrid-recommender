@@ -14,6 +14,17 @@ export function getCosineSimilarityRowVector(matrix, index) {
     });
 }
 
+export function addUserRating(userId, searchTitle, rating, MOVIES_IN_LIST) {
+    const { id, title } = getMovieIndexByTitle(MOVIES_IN_LIST, searchTitle);
+
+    return {
+        userId,
+        rating,
+        title,
+        movieId: id
+    };
+}
+
 export function getMovieIndexByTitle(MOVIES_IN_LIST, query) {
     const index = MOVIES_IN_LIST.map(movie => movie.title).indexOf(query);
 
