@@ -4,7 +4,8 @@
 #dist
 /dist
 /src/data/movies_data.json
-/src/data/ratings_data.json
+/src/data/ratings_data_by_user.json
+/src/data/ratings_data_by_movie.json
 
 # logs
 npm-debug.log
