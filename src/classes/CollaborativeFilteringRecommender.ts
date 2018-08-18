@@ -109,8 +109,7 @@ export default class CBFRecommender {
     getMatrices(ratingsGroupedByUser, ratingsGroupedByMovie, uId) {
         const itemUser = Object.keys(ratingsGroupedByMovie).reduce((result, movieId) => {
             const rowVector = Object.keys(ratingsGroupedByUser).map((userId, userIndex) => {
-
-                if (userId === uId) {
+                if (parseInt(userId, 10) === parseInt(uId, 10)) {
                     result.userIndex = userIndex;
                 }
 
@@ -130,7 +129,7 @@ export default class CBFRecommender {
 
             result.matrix.push(rowVector);
 
-            if (userId === uId) {
+            if (parseInt(userId, 10) === parseInt(uId, 10)) {
                 result.userIndex = userIndex;
             }
 

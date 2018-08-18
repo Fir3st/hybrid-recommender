@@ -25,16 +25,23 @@ const ME_USER_RATINGS = [
 
 const { ratingsByUser, ratingsByMovie } = prepareRatings([...ME_USER_RATINGS, ...RATINGS_DATA]);
 
-console.log('(1) Computing User-Based Cosine Similarity \n');
+console.log('Computing User-Based Cosine Similarity \n');
 
 const cfUserBasedRecommendation = cbfRecommender.predictWithCfUserBased(
     ratingsByUser,
     ratingsByMovie,
     ME_USER_ID
 );
-
-console.log('(2) Prediction \n');
 console.log(sliceAndDice(cfUserBasedRecommendation, MOVIES_DATA, 10, true));
+
+console.log('Computing Item-Based Cosine Similarity \n');
+
+const cfItemBasedRecommendation = cbfRecommender.predictWithCfItemBased(
+    ratingsByUser,
+    ratingsByMovie,
+    ME_USER_ID
+);
+console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true));
 
 /* cbRecommender.train(MOVIES_DATA.data.slice(0, 500));
 

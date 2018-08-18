@@ -10,9 +10,9 @@ csv()
     .then((data: any) => {
         data.forEach((element) => {
             ratings.data.push({
-                userId: parseInt(element.userId, 10),
-                movieId: parseInt(element.movieId, 10),
-                rating: parseFloat(element.rating),
+                userId: element.userId,
+                movieId: element.movieId,
+                rating: element.rating,
                 timestamp: element.timestamp
             });
         });

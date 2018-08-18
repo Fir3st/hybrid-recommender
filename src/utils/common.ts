@@ -18,9 +18,9 @@ export function addUserRating(userId, searchTitle, rating, MOVIES_IN_LIST) {
     const { id } = getMovieIndexByTitle(MOVIES_IN_LIST, searchTitle);
 
     return {
-        userId: parseInt(userId, 10),
-        rating: parseFloat(rating),
-        movieId: parseInt(id, 10)
+        userId,
+        rating,
+        movieId: id
     };
 }
 
@@ -35,13 +35,22 @@ export function getMovieIndexByTitle(MOVIES_IN_LIST, query) {
     return { title, id };
 }
 
-export function sliceAndDice(recommendations, MOVIES_BY_ID, count, onlyTitle) {
-    let recommends = recommendations.filter(recommendation => MOVIES_BY_ID[recommendation.movieId]);
+export function moviesById(movies) {
+    const result = {};
+    movies.map((movie) => {
+        result[movie.id] = movie;
+    });
+    return result;
+}
+
+export function sliceAndDice(recommendations, MOVIES, count, onlyTitle) {
+    const movies = moviesById(MOVIES);
+    let recommends = recommendations.filter(recommendation => movies[recommendation.movieId]);
 
     recommends = onlyTitle
-        ? recommendations.map(mr => ({ title: MOVIES_BY_ID[mr.movieId].title, score: mr.score }))
-        : recommendations.map(mr => ({ movie: MOVIES_BY_ID[mr.movieId], score: mr.score }));
+        ? recommends.map(mr => ({ title: movies[mr.movieId].title, score: mr.score }))
+        : recommends.map(mr => ({ movie: movies[mr.movieId], score: mr.score }));
 
-    return recommendations
+    return recommends
         .slice(0, count);
 }
