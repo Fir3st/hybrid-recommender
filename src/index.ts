@@ -1,6 +1,6 @@
 import ContentBasedRecommender from './classes/ContentBasedRecommender';
 import CollaborativeFilteringRecommender from './classes/CollaborativeFilteringRecommender';
-import { addUserRating, sliceAndDice } from './utils/common';
+import { addUserRating, sliceAndDice, getMovieIndexByTitle } from './utils/common';
 import { prepareRatings } from './utils/preparation';
 const MOVIES_DATA = require('./data/movies_data.json').data;
 const RATINGS_DATA = require('./data/ratings_data.json').data;
@@ -10,9 +10,9 @@ const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
     maxSimilarDocuments: 100,
     debug: true,
-    numberOfTopics: 20
+    numberOfTopics: 37
 });
-const cbfRecommender = new CollaborativeFilteringRecommender();
+/* const cbfRecommender = new CollaborativeFilteringRecommender();
 
 const ME_USER_RATINGS = [
     addUserRating(ME_USER_ID, 'Terminator 3: Rise of the Machines', '5.0', MOVIES_DATA),
@@ -25,7 +25,7 @@ const ME_USER_RATINGS = [
 
 const { ratingsByUser, ratingsByMovie } = prepareRatings([...ME_USER_RATINGS, ...RATINGS_DATA]);
 
-console.log('Computing User-Based Cosine Similarity \n');
+console.log('User-Based Cosine Similarity \n');
 
 const cfUserBasedRecommendation = cbfRecommender.predictWithCfUserBased(
     ratingsByUser,
@@ -34,17 +34,23 @@ const cfUserBasedRecommendation = cbfRecommender.predictWithCfUserBased(
 );
 console.log(sliceAndDice(cfUserBasedRecommendation, MOVIES_DATA, 10, true));
 
-console.log('Computing Item-Based Cosine Similarity \n');
+console.log('Item-Based Cosine Similarity \n');
 
 const cfItemBasedRecommendation = cbfRecommender.predictWithCfItemBased(
     ratingsByUser,
     ratingsByMovie,
     ME_USER_ID
 );
-console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true));
+console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true)); */
 
-/* cbRecommender.train(MOVIES_DATA.data.slice(0, 500));
+cbRecommender.train(MOVIES_DATA);
 
-const similarDocuments = cbRecommender.getSimilarDocuments('110', 0, 10);
+const similarDocuments = cbRecommender.getSimilarDocuments(
+    getMovieIndexByTitle(MOVIES_DATA, 'Jurassic Park'),
+    0,
+    10
+);
 
-console.log('Content-based filtering', similarDocuments); */
+console.log('Content-based filtering');
+
+console.log(similarDocuments);
