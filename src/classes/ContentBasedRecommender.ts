@@ -64,7 +64,7 @@ export default class CBRecommender {
         // step 1 - preprocess the documents
         const preprocessDocs = this.preprocessDocuments(documents, this.options);
         // step 2 - calculate similarities
-        this.data = this.calculateSimilarities(preprocessDocs, this.options);
+        this.calculateSimilarities(preprocessDocs, this.options);
     }
 
     public validateDocuments(documents) {
@@ -100,23 +100,17 @@ export default class CBRecommender {
         }
         const lda = new LDA();
         const ldaResult = lda.process(documents, options.numberOfTopics);
-        const processedDocuments = documents.map((item) => {
-            const documentTopics = ldaResult.docs.filter(doc => doc.documentId === item.id)[0].topics;
-            return { id: item.id, title: item.title, topics: Object.values(documentTopics) };
-        });
 
-        return processedDocuments;
+        return ldaResult.docs;
     }
 
     private calculateSimilarities(documents, options) {
-        const data = {};
-
         // initialize data hash
         for (let i = 0; i < documents.length; i += 1) {
             const document = documents[i];
-            const { id } = document;
+            const { documentId } = document;
 
-            data[id] = [];
+            this.data[documentId] = [];
         }
 
         // calculate the similar scores
@@ -126,31 +120,29 @@ export default class CBRecommender {
             }
 
             for (let j = 0; j < i; j += 1) {
-                const idi = documents[i].id;
-                const di = documents[i].topics;
-                const idj = documents[j].id;
-                const dj = documents[j].topics;
+                const idi = documents[i].documentId;
+                const di = Object.values(documents[i].topics);
+                const idj = documents[j].documentId;
+                const dj = Object.values(documents[j].topics);
                 const sim = similarity(di, dj);
                 if (options.debug) {
                     console.log(`Similarity: ${sim}`);
                 }
 
                 if (sim > options.minScore) {
-                    data[idi].push({ id: idj, score: sim });
-                    data[idj].push({ id: idi, score: sim });
+                    this.data[idi].push({ id: idj, score: sim });
+                    this.data[idj].push({ id: idi, score: sim });
                 }
             }
         }
 
         // finally sort the similar documents by descending order
-        Object.keys(data).forEach((id) => {
-            data[id].sort((a, b) => b.score - a.score);
+        Object.keys(this.data).forEach((id) => {
+            this.data[id].sort((a, b) => b.score - a.score);
 
-            if (data[id].length > options.maxSimilarDocuments) {
-                data[id] = data[id].slice(0, options.maxSimilarDocuments);
+            if (this.data[id].length > options.maxSimilarDocuments) {
+                this.data[id] = this.data[id].slice(0, options.maxSimilarDocuments);
             }
         });
-
-        return data;
     }
 }

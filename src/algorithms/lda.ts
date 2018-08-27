@@ -185,7 +185,6 @@ export class LDA {
         const vocab = [];
         let docCount = 0;
         for (let i = 0; i < docs.length; i++) {
-            console.log(`Processing document ${i + 1} of ${docs.length}`);
             const tmpString = striptags(docs[i].content, [], ' ').toLowerCase();
             // TODO: Add tf-idf
             if (tmpString === '') continue;

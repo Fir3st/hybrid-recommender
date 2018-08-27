@@ -8,8 +8,8 @@ const ME_USER_ID = 0;
 
 const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
-    maxSimilarDocuments: 100,
-    debug: true,
+    maxSimilarDocuments: 50,
+    debug: false,
     numberOfTopics: 37
 });
 /* const cbfRecommender = new CollaborativeFilteringRecommender();
@@ -43,10 +43,10 @@ const cfItemBasedRecommendation = cbfRecommender.predictWithCfItemBased(
 );
 console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true)); */
 
-cbRecommender.train(MOVIES_DATA);
+cbRecommender.train(MOVIES_DATA.slice(0, 500));
 
 const similarDocuments = cbRecommender.getSimilarDocuments(
-    getMovieIndexByTitle(MOVIES_DATA, 'Jurassic Park'),
+    getMovieIndexByTitle(MOVIES_DATA, 'Toy Story'),
     0,
     10
 );
