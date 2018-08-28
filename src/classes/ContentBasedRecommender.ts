@@ -130,8 +130,8 @@ export default class CBRecommender {
                 }
 
                 if (sim > options.minScore) {
-                    this.data[idi].push({ id: idj, score: sim });
-                    this.data[idj].push({ id: idi, score: sim });
+                    this.data[idi].push({ movieId: idj, score: sim });
+                    this.data[idj].push({ movieId: idi, score: sim });
                 }
             }
         }

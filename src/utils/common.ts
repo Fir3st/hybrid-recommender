@@ -43,7 +43,7 @@ export function moviesById(movies) {
     return result;
 }
 
-export function sliceAndDice(recommendations, MOVIES, count, onlyTitle) {
+export function sliceAndDice(recommendations, MOVIES, count, onlyTitle = true) {
     const movies = moviesById(MOVIES);
     let recommends = recommendations.filter(recommendation => movies[recommendation.movieId]);
 

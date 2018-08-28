@@ -10,7 +10,7 @@ const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
     maxSimilarDocuments: 50,
     debug: false,
-    numberOfTopics: 37
+    numberOfTopics: 47
 });
 /* const cbfRecommender = new CollaborativeFilteringRecommender();
 
@@ -43,14 +43,14 @@ const cfItemBasedRecommendation = cbfRecommender.predictWithCfItemBased(
 );
 console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true)); */
 
-cbRecommender.train(MOVIES_DATA.slice(0, 500));
+cbRecommender.train(MOVIES_DATA.slice(0, 1000));
 
 const similarDocuments = cbRecommender.getSimilarDocuments(
-    getMovieIndexByTitle(MOVIES_DATA, 'Toy Story'),
+    getMovieIndexByTitle(MOVIES_DATA, 'Toy Story').id,
     0,
     10
 );
 
 console.log('Content-based filtering');
 
-console.log(similarDocuments);
+console.log(sliceAndDice(similarDocuments, MOVIES_DATA, 10));
