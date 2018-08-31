@@ -28,7 +28,6 @@ export default class CBRecommender {
 
     constructor(options: IOptions = null) {
         this.setOptions(options);
-        this.data = {};
     }
 
     public setOptions(options: IOptions = null) {
@@ -105,12 +104,13 @@ export default class CBRecommender {
     }
 
     private calculateSimilarities(documents, options) {
+        const data = {};
         // initialize data hash
         for (let i = 0; i < documents.length; i += 1) {
             const document = documents[i];
             const { documentId } = document;
 
-            this.data[documentId] = [];
+            data[documentId] = [];
         }
 
         // calculate the similar scores
@@ -130,19 +130,21 @@ export default class CBRecommender {
                 }
 
                 if (sim > options.minScore) {
-                    this.data[idi].push({ movieId: idj, score: sim });
-                    this.data[idj].push({ movieId: idi, score: sim });
+                    data[idi].push({ movieId: idj, score: sim });
+                    data[idj].push({ movieId: idi, score: sim });
                 }
             }
         }
 
         // finally sort the similar documents by descending order
-        Object.keys(this.data).forEach((id) => {
-            this.data[id].sort((a, b) => b.score - a.score);
+        Object.keys(data).forEach((id) => {
+            data[id].sort((a, b) => b.score - a.score);
 
-            if (this.data[id].length > options.maxSimilarDocuments) {
-                this.data[id] = this.data[id].slice(0, options.maxSimilarDocuments);
+            if (data[id].length > options.maxSimilarDocuments) {
+                data[id] = data[id].slice(0, options.maxSimilarDocuments);
             }
         });
+
+        this.data = data;
     }
 }

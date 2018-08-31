@@ -8,8 +8,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "node_modules/.bin/nodemon",
-    "start": "ts-node src/index.ts",
+    "dev": "node_modules/.bin/nodemon --max-old-space-size=4096",
+    "start": "ts-node --max-old-space-size=4096 src/index.ts",
     "lint": "node_modules/.bin/tslint --project tsconfig.json",
     "data:movies": "ts-node src/data/movies_data.ts",
     "data:ratings": "ts-node src/data/ratings_data.ts"

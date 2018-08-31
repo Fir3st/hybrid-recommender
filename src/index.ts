@@ -10,17 +10,22 @@ const cbRecommender = new ContentBasedRecommender({
     minScore: 0.5,
     maxSimilarDocuments: 50,
     debug: false,
-    numberOfTopics: 47
+    numberOfTopics: 34
 });
-/* const cbfRecommender = new CollaborativeFilteringRecommender();
+const cbfRecommender = new CollaborativeFilteringRecommender();
 
 const ME_USER_RATINGS = [
-    addUserRating(ME_USER_ID, 'Terminator 3: Rise of the Machines', '5.0', MOVIES_DATA),
-    addUserRating(ME_USER_ID, 'Jarhead', '4.0', MOVIES_DATA),
-    addUserRating(ME_USER_ID, 'Back to the Future Part II', '3.0', MOVIES_DATA),
-    addUserRating(ME_USER_ID, 'Jurassic Park', '4.0', MOVIES_DATA),
-    addUserRating(ME_USER_ID, 'Reservoir Dogs', '3.0', MOVIES_DATA),
-    addUserRating(ME_USER_ID, 'Men in Black II', '3.0', MOVIES_DATA)
+    addUserRating(ME_USER_ID, 'Jurassic Park', '5.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Men in Black II', '4.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Harry Potter and the Deathly Hallows: Part 1', '1.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Harry Potter and the Deathly Hallows: Part 2', '1.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Kung Fu Panda 2', '5.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Hotel Transylvania', '5.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'How to Train Your Dragon', '5.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Rise of the Guardians', '5.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Abraham Lincoln: Vampire Hunter', '3.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'The Dictator', '4.0', MOVIES_DATA),
+    addUserRating(ME_USER_ID, 'Prince of Persia: The Sands of Time', '3.0', MOVIES_DATA)
 ];
 
 const { ratingsByUser, ratingsByMovie } = prepareRatings([...ME_USER_RATINGS, ...RATINGS_DATA]);
@@ -41,16 +46,16 @@ const cfItemBasedRecommendation = cbfRecommender.predictWithCfItemBased(
     ratingsByMovie,
     ME_USER_ID
 );
-console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true)); */
+console.log(sliceAndDice(cfItemBasedRecommendation, MOVIES_DATA, 10, true));
 
-cbRecommender.train(MOVIES_DATA.slice(0, 1000));
+/* cbRecommender.train(MOVIES_DATA.slice(0, 6000));
 
 const similarDocuments = cbRecommender.getSimilarDocuments(
-    getMovieIndexByTitle(MOVIES_DATA, 'Toy Story').id,
+    getMovieIndexByTitle(MOVIES_DATA, 'Jurassic Park').id,
     0,
     10
 );
 
 console.log('Content-based filtering');
 
-console.log(sliceAndDice(similarDocuments, MOVIES_DATA, 10));
+console.log(sliceAndDice(similarDocuments, MOVIES_DATA, 10, true)); */
