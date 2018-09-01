@@ -20,6 +20,7 @@
     "@types/lodash": "^4.14.114",
     "@types/mathjs": "^4.4.1",
     "@types/natural": "^0.2.33",
+    "@types/python-shell": "^0.4.1",
     "nodemon": "^1.18.3",
     "ts-node": "^7.0.0",
     "tslint": "^5.11.0",
@@ -36,6 +37,7 @@
     "mathjs": "^5.0.4",
     "ml-matrix": "^5.1.1",
     "natural": "^0.6.1",
+    "python-shell": "^0.5.0",
     "stopword": "^0.1.10",
     "striptags": "^3.1.1",
     "vector-object": "^1.2.0"
