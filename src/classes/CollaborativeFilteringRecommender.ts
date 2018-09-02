@@ -1,15 +1,17 @@
 import * as PythonShell from 'python-shell';
 
 export default class CBFRecommender {
-    public run() {
+    private dataSource = `${process.cwd()}/src/data/ratings_data.json`;
+
+    public recommendUserBased(id): void {
         const options = {
             args: [
-                '1',
-                `${process.cwd()}/src/data/ratings_data.json`
+                id,
+                this.dataSource
             ]
         };
 
-        PythonShell.run('python/collaborative_filtering.py', options, (err, result) => {
+        PythonShell.run('python/user_based_cbf.py', options, (err, result) => {
             if (err) throw err;
             console.log(result);
         });
