@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.metrics.pairwise import pairwise_distances
 from sklearn.neighbors import NearestNeighbors
 
-data = pd.read_json(sys.argv[2], orient = 'split')
+data = pd.read_json(sys.argv[3], orient = 'split')
 n_users = data['userId'].unique().shape[0]
 n_items = data['movieId'].unique().shape[0]
 users = data['userId'].unique()
@@ -38,6 +38,6 @@ def recommend(ratings, user, n = 10):
 
     return recommended_movies
 
-print(recommend(user_prediction, int(sys.argv[1]), 10))
+print(recommend(user_prediction, int(sys.argv[1]), int(sys.argv[2])))
 
 sys.stdout.flush()

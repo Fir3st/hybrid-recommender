@@ -43,7 +43,7 @@ export function moviesById(movies) {
     return result;
 }
 
-export function sliceAndDice(recommendations, MOVIES, count, onlyTitle = true) {
+export function sliceAndDice(recommendations, MOVIES, count = 10, onlyTitle = true) {
     const movies = moviesById(MOVIES);
     let recommends = recommendations.filter(recommendation => movies[recommendation.movieId]);
 
@@ -53,4 +53,15 @@ export function sliceAndDice(recommendations, MOVIES, count, onlyTitle = true) {
 
     return recommends
         .slice(0, count);
+}
+
+export function getMoviesByIds(ids, MOVIES, onlyTitle = true) {
+    const movies = moviesById(MOVIES);
+    let recommends = ids.map(id => movies[id]);
+
+    recommends = onlyTitle
+        ? recommends.map(mr => ({ title: movies[mr.id].title }))
+        : recommends.map(mr => ({ movie: movies[mr.id] }));
+
+    return recommends;
 }
