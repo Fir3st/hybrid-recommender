@@ -29,4 +29,31 @@ export default class CBFRecommender {
             });
         });
     }
+
+    public recommendItemBased(id, count = 10) {
+        const options = {
+            args: [
+                id,
+                count,
+                this.dataSource
+            ]
+        };
+
+        return new Promise((resolve, reject) => {
+            PythonShell.run('python/item_based_cbf.py', options, (err, result) => {
+                if (err) {
+                    reject(err);
+                }
+                let movieIds = [];
+                if (result && result.length === 1) {
+                    let resultString = result[0].trim();
+                    resultString = resultString.replace(/ +/g, ',');
+                    resultString = resultString.replace('[,', '').replace(']', '');
+
+                    movieIds = resultString.split(',');
+                }
+                resolve(movieIds);
+            });
+        });
+    }
 }

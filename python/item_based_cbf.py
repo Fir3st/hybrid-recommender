@@ -15,16 +15,14 @@ data_matrix = pd.DataFrame(np.zeros((n_users, n_items)), columns = movies, index
 for line in data.itertuples():
     data_matrix.at[line[4], line[1]] = line[2]
 
-user_similarity = 1 - pairwise_distances(data_matrix, metric=metric)
+item_similarity = 1 - pairwise_distances(data_matrix.transpose(), metric=metric)
 
-def predict(ratings, similarity):
-    mean_user_rating = ratings.mean(axis=1)
-    ratings_diff = (ratings - mean_user_rating[:, np.newaxis])
-    pred = mean_user_rating[:, np.newaxis] + similarity.dot(ratings_diff) / np.array([np.abs(similarity).sum(axis=1)]).T
+def predict(ratings, similarity, type='user'):
+    pred = ratings.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
 
     return pred
 
-user_prediction = pd.DataFrame(predict(data_matrix.values, user_similarity), columns = movies, index = users)
+item_prediction = pd.DataFrame(predict(data_matrix.values, item_similarity), columns = movies, index = users)
 
 def recommend(ratings, user, n = 10):
     user_movies = pd.DataFrame(data_matrix.loc[user])
@@ -36,6 +34,6 @@ def recommend(ratings, user, n = 10):
 
     return recommended_movies
 
-print(recommend(user_prediction, int(sys.argv[1]), int(sys.argv[2])))
+print(recommend(item_prediction, int(sys.argv[1]), int(sys.argv[2])))
 
 sys.stdout.flush()

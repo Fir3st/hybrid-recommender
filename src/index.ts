@@ -5,9 +5,14 @@ const moviesData = require('./data/movies_data').data;
 const cfRecommender = new CollaborativeFilteringRecommender();
 
 const run = async () => {
+    const userId = 1;
+    const numOfMovies = 10;
     try {
-        const movieIds = await cfRecommender.recommendUserBased(1, 5);
-        console.log(getMoviesByIds(movieIds, moviesData));
+        console.log('User-based collaborative filtering results:');
+        console.log(getMoviesByIds(await cfRecommender.recommendUserBased(userId, numOfMovies), moviesData));
+
+        console.log('Item-based collaborative filtering results:');
+        console.log(getMoviesByIds(await cfRecommender.recommendItemBased(userId, numOfMovies), moviesData));
     } catch (error) {
         console.log(error);
     }
