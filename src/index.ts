@@ -13,6 +13,9 @@ const run = async () => {
 
         console.log('Item-based collaborative filtering results:');
         console.log(getMoviesByIds(await cfRecommender.recommendItemBased(userId, numOfMovies), moviesData));
+
+        console.log('SVD collaborative filtering results:');
+        console.log(getMoviesByIds(await cfRecommender.recommendSVDBased(userId, numOfMovies), moviesData));
     } catch (error) {
         console.log(error);
     }

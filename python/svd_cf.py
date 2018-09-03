@@ -18,6 +18,16 @@ data_matrix_demeaned = data_matrix.values - data_matrix_mean.reshape(-1, 1)
 U, sigma, Vt = svds(data_matrix_demeaned, k=20)
 sigma = np.diag(sigma)
 
-all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + data_matrix_mean.reshape(-1, 1)
+predicted_ratings = pd.DataFrame(np.dot(np.dot(U, sigma), Vt) + data_matrix_mean.reshape(-1, 1), columns = movies, index = users)
 
-print(all_user_predicted_ratings)
+def recommend(ratings, user, n = 10):
+    user_movies = pd.DataFrame(data_matrix.loc[user])
+    user_movies.columns = ['rating']
+    viewed_movies = user_movies[user_movies['rating'] > 0].index
+    predicted_ratings = pd.DataFrame(ratings.loc[user])
+    predicted_ratings.columns = ['rating']
+    recommended_movies = predicted_ratings.drop(viewed_movies).sort_values(['rating'], ascending=[0]).head(n).index.values
+
+    return recommended_movies
+
+print(recommend(predicted_ratings, int(sys.argv[1]), int(sys.argv[2])))
