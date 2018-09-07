@@ -1,6 +1,7 @@
 import * as PythonShell from 'python-shell';
+import Recommender from './Recommender';
 
-export default class CBFRecommender {
+export default class CBFRecommender extends Recommender {
     private dataSource = `${process.cwd()}/src/data/ratings_data.json`;
 
     public recommendUserBased(id, count = 10) {
@@ -61,20 +62,5 @@ export default class CBFRecommender {
                 resolve(movieIds);
             });
         });
-    }
-
-    private parseIds(result): number[] {
-        let movieIds = [];
-        if (result && result.length === 1) {
-            let resultString = result[0].trim();
-            resultString = resultString.replace(/ +/g, ',');
-            resultString = resultString
-                .replace('[,', '')
-                .replace('[', '')
-                .replace(']', '');
-
-            movieIds = resultString.split(',');
-        }
-        return movieIds;
     }
 }
