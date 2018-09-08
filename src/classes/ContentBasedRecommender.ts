@@ -23,4 +23,24 @@ export default class CBRecommender extends Recommender {
             });
         });
     }
+
+    public recommendLDABased(id, count = 10) {
+        const options = {
+            args: [
+                id,
+                count,
+                this.dataSource
+            ]
+        };
+
+        return new Promise((resolve, reject) => {
+            PythonShell.run('python/lda_cbf.py', options, (err, result) => {
+                if (err) {
+                    reject(err);
+                }
+                const movieIds = this.parseIds(result);
+                resolve(movieIds);
+            });
+        });
+    }
 }

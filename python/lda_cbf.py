@@ -28,8 +28,8 @@ def preprocess(text):
     return result
 
 data = pd.read_json(sys.argv[3], orient='split')
-data.set_index('id', inplace=True)
 documents = data['content']
+ids = data['id']
 
 processed_docs = documents.map(preprocess)
 
@@ -53,7 +53,7 @@ def recommend(item_id, matrix, metric = metric, k=k):
     return similarities, indices
 
 similarities, indices = recommend(item_id=int(sys.argv[1]), matrix=df_docs_topics, k=int(sys.argv[2]))
-recommended = indices.flatten()
+recommended = np.delete(indices.flatten(), np.where(indices.flatten() == int(sys.argv[1])))
 
-print(np.delete(recommended, np.where(recommended == int(sys.argv[1]))))
+print(ids[recommended].values)
 

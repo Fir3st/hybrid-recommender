@@ -28,6 +28,10 @@ const run = async () => {
         console.log(`Content-based (TF-IDF) results for movie ${movieName}:`);
         const tfidfRecommends = await cbRecommender.recommendTfIdfBased(movieId, numOfMovies);
         console.log(getMoviesByIds(tfidfRecommends, moviesData));
+
+        console.log(`Content-based (LDA) results for movie ${movieName}:`);
+        const ldaRecommends = await cbRecommender.recommendLDABased(movieId, numOfMovies);
+        console.log(getMoviesByIds(ldaRecommends, moviesData));
     } catch (error) {
         console.log(error);
     }
