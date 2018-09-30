@@ -7,13 +7,13 @@ const cfRecommender = new CollaborativeFilteringRecommender();
 const cbRecommender = new ContentBasedRecommender();
 
 const run = async () => {
-    const userId = 1;
+    const userId = 1000;
     const numOfMovies = 10;
     const movieName = 'Jurassic Park';
     const movieId = getMovieIndexByTitle(moviesData, movieName).id;
 
     try {
-        console.log('User-based collaborative filtering results:');
+        /* console.log('User-based collaborative filtering results:');
         const ubRecommends = await cfRecommender.recommendUserBased(userId, numOfMovies);
         console.log(getMoviesByIds(ubRecommends, moviesData));
 
@@ -23,7 +23,7 @@ const run = async () => {
 
         console.log('SVD collaborative filtering results:');
         const svdRecommends = await cfRecommender.recommendSVDBased(userId, numOfMovies);
-        console.log(getMoviesByIds(svdRecommends, moviesData));
+        console.log(getMoviesByIds(svdRecommends, moviesData)); */
 
         console.log(`Content-based (TF-IDF) results for movie ${movieName}:`);
         const tfidfRecommends = await cbRecommender.recommendTfIdfBased(movieId, numOfMovies);

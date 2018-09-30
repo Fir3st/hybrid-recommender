@@ -37,8 +37,11 @@ dictionary = gensim.corpora.Dictionary(processed_docs)
 dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-lda = gensim.models.ldamodel.LdaModel(corpus, num_topics=30, id2word=dictionary, passes=2, minimum_probability=0.0)
-docs_topics = np.array([[tup[1] for tup in lst] for lst in lda[corpus]])
+tfidf = models.TfidfModel(corpus)
+corpus_tfidf = tfidf[corpus]
+
+lda = gensim.models.ldamodel.LdaModel(corpus_tfidf, num_topics=30, id2word=dictionary, passes=2, minimum_probability=0.0)
+docs_topics = np.array([[tup[1] for tup in lst] for lst in lda[corpus_tfidf]])
 df_docs_topics = pd.DataFrame(docs_topics, index=data.index)
 
 def recommend(item_id, matrix, metric = metric, k=k):
