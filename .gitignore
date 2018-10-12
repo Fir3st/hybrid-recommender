@@ -3,8 +3,6 @@
 
 #dist
 /dist
-/src/data/movies_data.json
-/src/data/ratings_data.json
 
 # logs
 npm-debug.log
