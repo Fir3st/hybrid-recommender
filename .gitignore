@@ -1,20 +1,12 @@
-# dependencies
-/node_modules
-
-#dist
-/dist
-
 # logs
-npm-debug.log
-yarn-error.log
+logs/*.log
 
-# locks
-package-lock.json
-yarn.lock
-
-#editors config
+# editors config
 /.vscode
 /.idea
 
-#config
-/config/local-development.json
+# python
+*.pyc
+__pycache__/
+*.db
+venv/
