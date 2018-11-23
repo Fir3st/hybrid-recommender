@@ -17,9 +17,8 @@ for line in data.itertuples():
 
 item_similarity = 1 - pairwise_distances(data_matrix.transpose(), metric=metric)
 
-def predict(ratings, similarity, type='user'):
+def predict(ratings, similarity):
     pred = ratings.dot(similarity) / np.array([np.abs(similarity).sum(axis=1)])
-
     return pred
 
 item_prediction = pd.DataFrame(predict(data_matrix.values, item_similarity), columns = movies, index = users)
