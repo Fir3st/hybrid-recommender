@@ -10,3 +10,8 @@ logs/*.log
 __pycache__/
 *.db
 venv/
+
+# jupyter
+jupyter/model
+jupyter/model.*
+jupyter/*.pickle
